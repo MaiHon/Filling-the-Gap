@@ -145,6 +145,7 @@ def debug_visualize(debug_path, index, img, meta_visible, meta_joints, meta_bbox
         cv2.imwrite(str(debug_path / f"{index}_visualized.jpg"), img_w_joitns)
     else:
         cv2.imwrite(str(debug_path / f"{index}_{postfix}.jpg"), img_w_joitns)
+
     
 def valid_visualize(epoch, count, data, preds, save_path, visualize_num=None):
     img_paths = data['img_path'][0]

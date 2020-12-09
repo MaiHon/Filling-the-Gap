@@ -173,7 +173,8 @@ class VAE(Base):
 
         if not valid:
             losses['loss'].backward()
-        self.optim.step()
+            self.optim.step()
+            self.sched.step()
         
         if not valid: return losses
         else: return preds, losses

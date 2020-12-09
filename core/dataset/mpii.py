@@ -15,7 +15,6 @@ from torch.utils.data import Dataset
 
 
 def prepare_data(cfg, tar_joint_num=16):
-    cnt = 0
     data_images = []
     data_annots = []
 
@@ -87,16 +86,17 @@ def prepare_data(cfg, tar_joint_num=16):
                     
 
                     if len(joint_pos) >= tar_joint_num:
-                        # for i in range(16):
-                        #     for j in range(16):
-                        #         if i == j: continue                        
-                                
-                        #         if joint_pos[i][0] == joint_pos[j][0] and joint_pos[i][1] == joint_pos[j][1]:
-                        #             cnt += 1
-                        
                         # delete noise dataset
-                        if joint_pos[0][0] == joint_pos[5][0] and joint_pos[0][1] == joint_pos[5][1]:
-                            continue
+                        for i in range(16):
+                            for j in range(16):
+                                if i == j: continue                        
+                                
+                                if joint_pos[i][0] == joint_pos[j][0] and joint_pos[i][1] == joint_pos[j][1]:
+                                    continue
+                        
+
+                        # if joint_pos[0][0] == joint_pos[5][0] and joint_pos[0][1] == joint_pos[5][1]:
+                            # continue
                         
                         
                         objpos = np.array([v[1] for v in sorted(joint_pos.items(), key=lambda x: x[0])]).reshape(16, 2)
@@ -126,7 +126,6 @@ def prepare_data(cfg, tar_joint_num=16):
                         if train_flag:
                             data_images.append(img_fn)
                             data_annots.append(data)
-    print(cnt)
     return data_images, data_annots
 
 
@@ -225,7 +224,7 @@ class MPII_Dataset(Dataset):
                         rotation = np.clip(np.random.randn()*self.cfg.rotate_factor, -self.cfg.rotate_factor, self.cfg.rotate_factor)
                 
                 trans = get_affine_transform(centre, scale, rotation, (img.shape[1], img.shape[0]))
-                cropped_img = cv2.warpAffine(img, trans, (img.shape[1], img.shape[0]), flags=cv2.INTER_LINEAR)
+                # cropped_img = cv2.warpAffine(img, trans, (img.shape[1], img.shape[0]), flags=cv2.INTER_LINEAR)
             
                 for j in range(self.cfg.joints_num):
                     meta_joints[j, :2] = affine_transform(
@@ -244,10 +243,13 @@ class MPII_Dataset(Dataset):
             input_meta_joints = target_meta_joints.copy()
 
             
-            random_mask_num = min(int(random.random() * (self.cfg.random_mask_num)+1), len(visibility))
-            if random_mask_num != 0:
-                random_mask = np.random.choice(visibility, random_mask_num, replace=False)
-                input_meta_joints[random_mask, :] = 0
+            if random.random() > 0.2:
+                # random_mask_num = int(random.random() * (self.cfg.random_mask_num))
+                random_mask_num = int(random.random() * 5) + 1
+                    
+                if random_mask_num != 0:
+                    random_mask = np.random.choice(visibility, random_mask_num, replace=False)
+                    input_meta_joints[random_mask, :] = 0
 
             assert input_meta_joints.shape[0] == self.cfg.joints_num
             
@@ -276,7 +278,7 @@ class MPII_Dataset(Dataset):
 
             if random.random() > 0.15:
                 # random_mask_num = int(random.random() * (self.cfg.random_mask_num))
-                random_mask_num = int(random.random() * 4)
+                random_mask_num = int(random.random() * 3)
                     
                 if random_mask_num != 0:
                     random_mask = np.random.choice(visibility, random_mask_num, replace=False)

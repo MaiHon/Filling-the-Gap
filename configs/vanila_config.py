@@ -10,7 +10,7 @@ log_name = datetime.now().strftime("%H:%M:%S__%Y-%m-%d")
 class config:
     def __init__(self):
         self.root = Path('.')
-        self.postFix = "v8"
+        self.postFix = "v7"
         
         # logging set
         logging_path = self.root / f'logs/loggers_{self.postFix}'

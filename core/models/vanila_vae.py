@@ -42,7 +42,7 @@ class VAE(Base):
             modules.append(
                 nn.Sequential(
                     nn.Linear(self.input_dims, hidden_dim),
-                    # nn.BatchNorm1d(hidden_dim),
+                    nn.BatchNorm1d(hidden_dim),
                     nn.ReLU()
                 )
             )
@@ -70,7 +70,7 @@ class VAE(Base):
         
         self.decode_input = nn.Sequential(
             nn.Linear(self.latent_dim, self.input_dims),
-            # nn.BatchNorm1d(self.input_dims),
+            nn.BatchNorm1d(self.input_dims),
             nn.ReLU()
         )
 
@@ -79,7 +79,7 @@ class VAE(Base):
                 modules.append(
                     nn.Sequential(
                         nn.Linear(self.input_dims, hidden_dims[i]), 
-                        # nn.BatchNorm1d(hidden_dims[i]),
+                        nn.BatchNorm1d(hidden_dims[i]),
                         nn.ReLU()
                     )
                 )
@@ -157,8 +157,8 @@ class VAE(Base):
 
         if not valid:
             losses['loss'].backward()
-        self.optim.step()
-        self.sched.step()
+            self.optim.step()
+            # self.sched.step()
 
         if not valid: return losses
         else: return preds, losses

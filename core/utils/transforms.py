@@ -14,7 +14,8 @@ def normalize_coords(coords, basis=8):
     
     # centre_base = [2, 3, 8, 12, 13]
     # centre_base = [12, 13]
-    centre_base = [2, 3, 12, 13]
+    # centre_base = [2, 3, 12, 13]
+    centre_base = [2, 13]
     centre = np.mean(coords[centre_base, :], axis=0)
     scaler = get_dist(coords[basis], centre)
     

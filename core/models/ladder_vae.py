@@ -31,7 +31,7 @@ class MLP(nn.Module):
         mlp = self.mlp(x)
         
         mu, var = self.mu(mlp), self.var(mlp)
-        # var = F.softplus(var) + 1e-6
+        # var = F.softplus(var) + 1e-8
         return mlp, mu, var
 
 
@@ -152,18 +152,18 @@ class VAE(Base):
         recons_loss = torch.sum(F.mse_loss(recon, target, reduction='none'), dim=-1).mean()
         kld_loss = torch.mean(
             -0.5 * torch.sum(
-                1 + encoder_preds[0][2] - encoder_preds[0][1] ** 2 - encoder_preds[0][2].exp(), dim = -1
+                1 + encoder_preds[0][2] - encoder_preds[0][1] ** 2 - encoder_preds[0][2].log(), dim = -1
                 )
             )
         
         
-        # for i in range(len(decoder_preds)):
-        #     kld_loss += torch.mean(
-        #         -0.5 * torch.sum(
-        #             decoder_preds[i][0] + encoder_preds[0][2] \
-        #                 - (encoder_preds[0][1]-decoder_preds[i][1]) ** 2 - encoder_preds[0][2].exp(), dim = -1
-        #         )
-        #     )
+        for i in range(len(decoder_preds)):
+            kld_loss += torch.mean(
+                -0.5 * torch.sum(
+                    decoder_preds[i][0] + encoder_preds[0][2] \
+                        - (encoder_preds[0][1]-decoder_preds[i][1]) ** 2 - encoder_preds[0][2].log(), dim = -1
+                )
+            )
         
         loss = recons_loss + kld_weight * kld_loss
         return {'loss': loss, 'Reconstruction_Loss':recons_loss, 'KLD':kld_loss}
@@ -185,7 +185,8 @@ class VAE(Base):
 
         if not valid:
             losses['loss'].backward()
-        self.optim.step()
+            self.optim.step()
+            # self.sched.step()
         
         if not valid: return losses
         else: return preds, losses

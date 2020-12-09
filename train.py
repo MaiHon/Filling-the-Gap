@@ -23,7 +23,7 @@ def main():
         from core.models.control_vae import VAE
     elif args.m_type == "ladder":
         from configs.ladder_config import cfg
-        from core.models.ladder_vae2 import VAE
+        from core.models.ladder_vae import VAE
     
     
     random_seed = 2020
@@ -48,7 +48,7 @@ def main():
     model = VAE(cfg)
     model.set_dsets((t_dset, v_dset))
     model.set_optim()
-    model.set_sched()
+    # model.set_sched()
     model.gpu_check()
 
     if cfg.load_weights:
