@@ -15,6 +15,6 @@
 ### Todo
 - [x] Implementing model
 - [x] Implementing Augmentation
-- [ ] Training on MPII dataset 
+- [x] Training on MPII dataset 
 - [ ] Campare the result with Original Ref
 
