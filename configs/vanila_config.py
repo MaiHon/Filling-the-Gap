@@ -10,7 +10,7 @@ log_name = datetime.now().strftime("%H:%M:%S__%Y-%m-%d")
 class config:
     def __init__(self):
         self.root = Path('.')
-        self.postFix = "v7"
+        self.postFix = "v10"
         
         # logging set
         logging_path = self.root / f'logs/loggers_{self.postFix}'
@@ -74,9 +74,9 @@ class config:
         self.lr = 1e-3
 
         self.start_epoch = 0
-        self.epochs = 200
+        self.epochs = 250
         self.train_batch = 256
-        self.valid_batch = 256
+        self.valid_batch = 512
         
         self.checkpoint = self.root / f"models/weights_{self.postFix}"
         if not os.path.exists(self.checkpoint):
@@ -84,7 +84,7 @@ class config:
         
         self.load_weights = True
         if self.load_weights:
-            self.weight_path = self.root / f'models/weights_{self.postFix}/042_.pth.tar'
+            self.weight_path = self.root / f'models/weights_{self.postFix}/247_.pth.tar'
             # self.weight_path = self.root / f'weights_v2/075_.pth.tar'
 
         # valid
